@@ -14,7 +14,7 @@ Create a web application to
 
 Create your own fork and create a pull request once you finished 
 
-## Recommended but not restricted tech stack
+## Recommended but not limited tech stack
 
 - React
 - NodeJS
