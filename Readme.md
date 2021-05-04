@@ -27,14 +27,16 @@ Create your own fork and create a pull request once you finished
 ### Prefered lib and languages
 - React hooks
 - Typescript
-- GraphQL
-- Redux
-- Docker
 
 ### General
 - Nice UI
 - Mobile
 - Unit test
+
+### Advanced
+- GraphQL
+- Redux
+- Docker
 
 ## Tips
 
