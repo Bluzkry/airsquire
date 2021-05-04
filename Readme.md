@@ -2,7 +2,7 @@
 
 ## Goal
 
-Create a project to 
+Create a web application to 
 
   - Upload panorama images
   - Search panorama images by name and list them
@@ -10,7 +10,7 @@ Create a project to
   - List bookmarked panorama images
   - Panorama viewer like this [example](https://threejs.org/examples/webgl_panorama_equirectangular.html)
 
-## Solution 
+## Process 
 
 Create your own fork and create a pull request once you finished 
 
