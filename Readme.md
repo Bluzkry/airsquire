@@ -40,6 +40,6 @@ Create your own fork and create a pull request once you finished
 
 ## Tips
 
-- You can use this [boilerplate](https://github.com/AirGo3D/frontend-boilerplate) to boostrap frontend project
-- You can use this [boilerplate](https://github.com/AirGo3D/nodejs-boilerplate) to boostrap your backend project
+- You can use this [boilerplate](https://github.com/AirGo3D/frontend-boilerplate) to bootstrap frontend project
+- You can use this [boilerplate](https://github.com/AirGo3D/nodejs-boilerplate) to bootstrap backend project
 - You can find panorama images from this repo
