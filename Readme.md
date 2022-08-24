@@ -4,11 +4,13 @@
 
 Create a web application to 
 
-  - Upload panorama images
-  - Search panorama images by name and list them
-  - Bookmark panorama images
-  - List bookmarked panorama images
-  - Panorama viewer like this [example](https://threejs.org/examples/webgl_panorama_equirectangular.html)
+  1. Upload & Download panorama images
+  2. List panorama images in a table with the essential image data
+  3. Search panorama images by name
+  4. Bookmark panorama images
+  5. List bookmarked panorama images
+  6. Draw a pie chart to show data analytic about the bookmarked/un-bookmarked images
+  7. Panorama viewer like this [example](https://threejs.org/examples/webgl_panorama_equirectangular.html)
 
 ## Process 
 
@@ -16,11 +18,12 @@ Create your own fork and create a pull request once you finished
 
 ## Recommended but not limited tech stack
 
-- React
+- ReactJS
+- ExpressJS
 - NodeJS
 - MongoDB
 - ThreeJS
-- AntDesign
+- Ant Design
 
 ## Bonus
 
@@ -30,6 +33,8 @@ Create your own fork and create a pull request once you finished
 
 ### General
 - Nice UI
+- Responsive
+- Activities logging
 - Mobile
 - Unit test
 
