@@ -9,12 +9,12 @@ Create a web application to
   3. Search panorama images by name
   4. Bookmark panorama images
   5. List bookmarked panorama images
-  6. Draw a pie chart to show data analytic about the bookmarked/un-bookmarked images
+  6. Draw a pie chart to show data analytics about the bookmarked/un-bookmarked images
   7. Panorama viewer like this [example](https://threejs.org/examples/webgl_panorama_equirectangular.html)
 
 ## Process 
 
-Create your own fork and create a pull request once you finished 
+Please create your own fork and manage on your side. 
 
 ## Recommended but not limited tech stack
 
@@ -34,14 +34,16 @@ Create your own fork and create a pull request once you finished
 ### General
 - Nice UI
 - Responsive
-- Activities logging
-- Mobile
+- Mobile Web
 - Unit test
 
 ### Advanced
 - GraphQL
 - Redux
+- Activities logging
 - Docker
+- Served on cloud server(AWS/Google/Azure/AliCloud/....)
+- React Native to build Mobile App(ios/android)
 
 ## Tips
 
