@@ -5,11 +5,11 @@
 Create a web application to 
 
   1. Upload & Download panorama images
-  2. List panorama images in a table with the essential data about the image files
+  2. List panorama images in a table with the related meta-data about the image files
   3. Search panorama images by name
   4. Bookmark panorama images
   5. Can filter panorama images by the status of bookmark in the list
-  6. Show data analytics by any type of charts about the bookmarked/un-bookmarked images
+  6. Show data analytics by charts about the bookmarked/un-bookmarked images
   7. Panorama viewer like this [example](https://threejs.org/examples/webgl_panorama_equirectangular.html)
 
 ## Process 
@@ -33,18 +33,18 @@ Need to show and introduce the project demo in the second round interview.
 - Typescript
 
 ### General
+- Package Management
 - Nice UI
 - Responsive
-- Mobile Web
-- Unit Test
 
 ### Advanced
 - GraphQL
 - Redux
-- Activities logging
+- Unit Test
+- Activities logging in backend
 - Docker
-- Served on cloud server(AWS/Google/Azure/AliCloud/....)
-- React Native to build Mobile App(ios/android)
+- Frontend served on cloud (AWS/Google/Azure/AliCloud/....)
+- Mobile Web (ios/android)
 
 ## Tips
 
