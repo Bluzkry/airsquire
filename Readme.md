@@ -10,7 +10,7 @@ Create a web application to
   4. Bookmark panorama images
   5. Can filter panorama images by the status of bookmark in the list
   6. Show data analytics by charts about the bookmarked/un-bookmarked images
-  7*. Panorama viewer like this [example](https://threejs.org/examples/webgl_panorama_equirectangular.html)
+  7. Panorama viewer like this [example](https://threejs.org/examples/webgl_panorama_equirectangular.html)
 
 ## Process 
 
