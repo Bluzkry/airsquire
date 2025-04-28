@@ -34,20 +34,19 @@ Need to show and introduce the project demo in the second round interview.
 
 ### General
 - Package Management
-- Nice UI
-- Responsive
+- Nice UI/UX
 
 ### Advanced
+- Responsive UI
 - GraphQL
 - Redux
 - Unit Test
 - Activities logging in backend
 - Docker
 - Frontend served on cloud (AWS/Google/Azure/AliCloud/....)
-- Mobile Web (ios/android)
 
 ## Tips
 
-- You can use this [boilerplate](https://github.com/AirGo3D/frontend-boilerplate) to bootstrap front-end project
-- You can use this [boilerplate](https://github.com/AirGo3D/nodejs-boilerplate) to bootstrap back-end project
+- You can use this [boilerplate](https://github.com/AirGo3D/frontend-boilerplate) to bootstrap front-end project, or any other ReactJS boilerplate you prefer.
+- You can use this [boilerplate](https://github.com/AirGo3D/nodejs-boilerplate) to bootstrap back-end project, or any other ExpressJS boilerplate you prefer.
 - You can find panorama images from this repo
