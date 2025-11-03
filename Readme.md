@@ -43,7 +43,7 @@ Need to show and introduce the project demo in the second round interview.
 - Unit Test
 - Activities logging in backend
 - Docker
-- Frontend served on cloud (AWS/Google/Azure/AliCloud/....)
+- Served on cloud (AWS/Google/Azure/AliCloud/....)
 
 ## Tips
 
