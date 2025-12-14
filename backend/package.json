@@ -11,7 +11,6 @@
 		"build": "tsc && tsup",
 		"start:dev": "node --import=tsx --watch src/index.ts",
 		"start:prod": "node dist/index.js",
-		"check": "biome check --write",
 		"test": "vitest run",
 		"test:cov": "vitest run --coverage"
 	},
@@ -30,7 +29,6 @@
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.1.4",
 		"@types/cors": "2.8.19",
 		"@types/express": "5.0.3",
 		"@types/supertest": "6.0.3",

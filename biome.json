@@ -1,0 +1,29 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+	"vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+	"files": {
+		"ignoreUnknown": false,
+		"includes": ["**", "!**/dist"]
+	},
+	"formatter": {
+		"enabled": true,
+		"lineWidth": 120,
+		"bracketSpacing": true
+	},
+	"assist": {
+		"actions": { "source": { "organizeImports": { "level": "on", "options": { "groups": ["react", ":PACKAGE"] } } } }
+	},
+	"overrides": [
+		{
+			"includes": ["**/*.yaml", "**/*.yml", "**/pnpm-lock.yaml", "**/package-lock.json", "**/yarn.lock"],
+			"formatter": { "enabled": false },
+			"linter": { "enabled": false }
+		}
+	],
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true
+		}
+	}
+}
