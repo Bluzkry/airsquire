@@ -1,10 +1,12 @@
 import type React from "react";
 import { useEffect, useState } from "react";
+import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import { Button, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
+import FileSaver from "file-saver";
 import prettyBytes from "pretty-bytes";
 import { API_BASE_URL } from "../utils/constants";
 
@@ -102,6 +104,17 @@ const Panoramas: React.FC = () => {
 				</div>
 			),
 		},
+		{
+			title: "Download",
+			key: "download",
+			render: ({ id, loading }: { id: string; loading: boolean }) => (
+				<div>
+					<Button loading={loading} onClick={() => downloadPanorama(id)}>
+						<DownloadIcon />
+					</Button>
+				</div>
+			),
+		},
 	];
 
 	useEffect(() => {
@@ -116,6 +129,24 @@ const Panoramas: React.FC = () => {
 	const updatePanoramas = (id: string, updates: Partial<Panorama>) =>
 		setPanoramas((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
 
+	const downloadPanorama = async (id: string) => {
+		updatePanoramas(id, { loading: true });
+
+		try {
+			const { data, headers } = await axios.get(`${API_BASE_URL}/panoramas/${id}/download`, { responseType: "blob" });
+
+			const blob = new Blob([data]);
+			const contentType = headers["content-type"] || "image/jpeg";
+			const extension = contentType.split("/")[1].split(";")[0];
+
+			FileSaver.saveAs(blob, `panorama-${id}.${extension}`);
+		} catch (error) {
+			console.error("Failed to download panorama: ", error);
+		} finally {
+			updatePanoramas(id, { loading: false });
+		}
+	};
+
 	const bookmarkPanorama = async (id: string, bookmark: boolean) => {
 		updatePanoramas(id, { loading: true });
 		const newBookmark = !bookmark;
@@ -123,8 +154,8 @@ const Panoramas: React.FC = () => {
 			await axios.patch(`${API_BASE_URL}/panoramas/${id}/bookmark`, { bookmark: newBookmark });
 			updatePanoramas(id, { bookmark: newBookmark, loading: false });
 		} catch (error) {
-			updatePanoramas(id, { loading: false });
 			console.error("Failed to toggle bookmark: ", error);
+			updatePanoramas(id, { loading: false });
 		}
 	};
 

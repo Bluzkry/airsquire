@@ -24,6 +24,24 @@ panoramaRegistry.registerPath({
 	responses: createApiResponse(z.array(PanoramaOpenApiSchema), PANORAMA_GET_MANY_SUCCESS_MESSAGE),
 });
 panoramaRegistry.registerPath({
+	method: "get",
+	path: "/panoramas/:id/download",
+	tags: ["Panoramas"],
+	responses: {
+		200: {
+			description: "Panorama image",
+			content: {
+				"application/octet-stream": {
+					schema: {
+						type: "string",
+						format: "binary",
+					},
+				},
+			},
+		},
+	},
+});
+panoramaRegistry.registerPath({
 	method: "post",
 	path: "/panoramas",
 	tags: ["Panoramas"],
@@ -48,5 +66,6 @@ panoramaRegistry.registerPath({
 });
 
 panoramaRouter.get("/", panoramaController.getPanoramas);
+panoramaRouter.get("/:id/download", panoramaController.downloadPanorama);
 panoramaRouter.post("/", panoramaController.postPanorama);
 panoramaRouter.patch("/:id/bookmark", panoramaController.patchPanoramaBookmark);

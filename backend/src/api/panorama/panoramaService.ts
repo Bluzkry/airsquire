@@ -1,4 +1,4 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { StatusCodes } from "http-status-codes";
 import { pino } from "pino";
 import { ServiceResponse } from "@/common/models/serviceResponse";
@@ -47,10 +47,56 @@ export class PanoramaService {
 		}
 	}
 
-	public async insertPanorama(
-		body: PanoramaUploadBodyType,
-		files: Array<Express.Multer.File>,
-	): Promise<ServiceResponse<null | unknown>> {
+	private async downloadFromAws(s3Key: string) {
+		log.info({ message: "Downloading panorama from AWS.", Key: s3Key });
+		const awsParams = {
+			Bucket: AWS_S3_BUCKET,
+			Key: s3Key,
+		};
+
+		const { Body, ETag, VersionId } = await s3Client.send(new GetObjectCommand(awsParams));
+		log.info({
+			message: "Panorama downloaded successfully from AWS.",
+			awsResponse: { ETag, VersionId },
+		});
+
+		return Body;
+	}
+
+	public async downloadPanoramaStream(id: string) {
+		try {
+			const metadata = await this.panoramaRepository.findOne(id);
+			if (!metadata || !metadata.s3Key) throw new Error("No S3Key found from MongoDB metadata.");
+
+			const panoramaStream = await this.downloadFromAws(metadata.s3Key);
+
+			if (!panoramaStream) throw new Error("No panorama stream downloaded from AWS.");
+			return { panoramaStream, metadata };
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	private async uploadToAws(panorama: Express.Multer.File) {
+		const s3Key = `${panorama.originalname}-${Date.now()}`;
+		log.info({ message: "Uploading panorama into AWS.", Key: s3Key });
+		const awsParams = {
+			Bucket: AWS_S3_BUCKET,
+			Key: s3Key,
+			Body: panorama.buffer,
+			ContentType: panorama.mimetype,
+		};
+
+		const { ETag, VersionId, RequestCharged } = await s3Client.send(new PutObjectCommand(awsParams));
+		log.info({
+			message: "Panorama uploaded successfully into AWS.",
+			awsResponse: { ETag, VersionId, RequestCharged },
+		});
+
+		return s3Key;
+	}
+
+	public async insertPanorama(body: PanoramaUploadBodyType, files: Array<Express.Multer.File>) {
 		try {
 			const s3Key = await this.uploadToAws(files[0]);
 
@@ -77,25 +123,6 @@ export class PanoramaService {
 				StatusCodes.INTERNAL_SERVER_ERROR,
 			);
 		}
-	}
-
-	private async uploadToAws(panorama: Express.Multer.File): Promise<string> {
-		const s3Key = `${panorama.originalname}-${Date.now()}`;
-		log.info({ message: "Uploading panorama into AWS.", Key: s3Key });
-		const awsParams = {
-			Bucket: AWS_S3_BUCKET,
-			Key: s3Key,
-			Body: panorama.buffer,
-			ContentType: panorama.mimetype,
-		};
-
-		const { ETag, VersionId, RequestCharged } = await s3Client.send(new PutObjectCommand(awsParams));
-		log.info({
-			message: "Panorama uploaded successfully into AWS.",
-			awsResponse: { ETag, VersionId, RequestCharged },
-		});
-
-		return s3Key;
 	}
 
 	public async updatePanoramaBookmark({ id, bookmark }: { id: string; bookmark: boolean }) {

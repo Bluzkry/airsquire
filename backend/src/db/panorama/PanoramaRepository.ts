@@ -31,6 +31,22 @@ export const PanoramaSchema = new Schema({
 export const PanoramaModel = model("Panorama", PanoramaSchema);
 
 export class PanoramaRepository {
+	async findOne(_id: string) {
+		try {
+			log.info({ message: "Getting panorama metadata from MongoDB.", _id });
+
+			const document = await PanoramaModel.findById(_id).lean().exec();
+			if (!document) throw new Error("Panorama metadata not found.");
+
+			log.info({ message: "Found panorama metadata", _id, document });
+			return document;
+		} catch (err) {
+			const errorMessage = err instanceof Error ? { message: err.message, stack: err.stack } : err;
+			log.error({ message: "Failed to get panorama", error: errorMessage });
+			throw err;
+		}
+	}
+
 	async getMany() {
 		try {
 			log.info({ message: "Getting panoramas metadata from MongoDB." });

@@ -36,5 +36,6 @@ export const PanoramaOpenApiSchema = z.object({
 export const GET_PANORAMAS_LIMIT = 50;
 
 export const PANORAMA_GET_MANY_SUCCESS_MESSAGE = "Panoramas found.";
+export const PANORAMA_DOWNLOAD_SUCCESS_MESSAGE = "Panorama downloaded.";
 export const PANORAMA_UPLOAD_SUCCESS_MESSAGE = "Panorama uploaded successfully.";
 export const PANORAMA_BOOKMARK_SUCCESS_MESSAGE = "Panorama bookmark updated.";
