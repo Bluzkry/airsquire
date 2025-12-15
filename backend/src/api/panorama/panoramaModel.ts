@@ -17,6 +17,11 @@ export const PanoramaUploadResponse = z.object({
 	id: z.string(),
 });
 
+export const PanoramaBookmarkResponse = z.object({
+	id: z.string(),
+	bookmark: z.boolean(),
+});
+
 export const PanoramaOpenApiSchema = z.object({
 	uid: z.string(),
 	name: z.string(),
@@ -25,9 +30,11 @@ export const PanoramaOpenApiSchema = z.object({
 	fileModifiedAt: z.date(),
 	updatedAt: z.date(),
 	size: z.string(),
+	bookmark: z.boolean(),
 });
 
 export const GET_PANORAMAS_LIMIT = 50;
 
-export const PANORAMA_UPLOAD_SUCCESS_MESSAGE = "Panorama uploaded successfully.";
 export const PANORAMA_GET_MANY_SUCCESS_MESSAGE = "Panoramas found.";
+export const PANORAMA_UPLOAD_SUCCESS_MESSAGE = "Panorama uploaded successfully.";
+export const PANORAMA_BOOKMARK_SUCCESS_MESSAGE = "Panorama bookmark updated.";

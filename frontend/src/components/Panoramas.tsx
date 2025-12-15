@@ -1,12 +1,14 @@
 import type React from "react";
 import { useEffect, useState } from "react";
-import { Table, Typography } from "antd";
+import StarIcon from "@mui/icons-material/Star";
+import StarOutlineIcon from "@mui/icons-material/StarOutline";
+import { Button, Table, Typography } from "antd";
 import axios from "axios";
 import prettyBytes from "pretty-bytes";
 import { API_BASE_URL } from "../utils/constants";
 
-type Panoramas = {
-	id: string;
+type PanoramasApiResponse = {
+	_id: string;
 	uid: string;
 	name: string;
 	size: string;
@@ -14,40 +16,14 @@ type Panoramas = {
 	createdAt: string;
 	fileModifiedAt: string;
 	updatedAt: string;
+	bookmark: boolean;
+	loading?: boolean;
 };
 
-const panoramaColumns = [
-	{
-		title: "Name",
-		dataIndex: "name",
-		key: "name",
-	},
-	{
-		title: "Size",
-		dataIndex: "size",
-		key: "size",
-	},
-	{
-		title: "Type",
-		dataIndex: "type",
-		key: "type",
-	},
-	{
-		title: "Created At",
-		dataIndex: "createdAt",
-		key: "createdAt",
-	},
-	{
-		title: "Original File Modified At",
-		dataIndex: "fileModifiedAt",
-		key: "fileModifiedAt",
-	},
-	{
-		title: "Updated At",
-		dataIndex: "updatedAt",
-		key: "updatedAt",
-	},
-];
+type Panoramas = Omit<PanoramasApiResponse, "_id"> & {
+	id: string;
+	loading?: boolean;
+};
 
 const parseDate = (date: string) =>
 	new Date(date).toLocaleString([], {
@@ -58,20 +34,63 @@ const parseDate = (date: string) =>
 		minute: "2-digit",
 	});
 
-const parsePanoramas = (panoramas: Panoramas[]): Panoramas[] =>
-	panoramas.map(({ name, size, createdAt, fileModifiedAt, updatedAt, ...rest }) => {
-		return {
-			...rest,
-			name: name.replace(/\.[^/.]+$/, ""),
-			size: prettyBytes(Number(size)),
-			createdAt: parseDate(createdAt),
-			fileModifiedAt: parseDate(fileModifiedAt),
-			updatedAt: parseDate(updatedAt),
-		};
-	});
+const parsePanoramas = (panoramas: PanoramasApiResponse[]): Panoramas[] =>
+	panoramas.map(({ _id, name, size, createdAt, fileModifiedAt, updatedAt, ...rest }) => ({
+		...rest,
+		id: _id,
+		name: name.replace(/\.[^/.]+$/, ""),
+		size: prettyBytes(Number(size)),
+		createdAt: parseDate(createdAt),
+		fileModifiedAt: parseDate(fileModifiedAt),
+		updatedAt: parseDate(updatedAt),
+		loading: false,
+	}));
 
 const Panoramas: React.FC = () => {
 	const [panoramas, setPanoramas] = useState<Panoramas[]>([]);
+	const panoramaColumns = [
+		{
+			title: "Name",
+			dataIndex: "name",
+			key: "name",
+		},
+		{
+			title: "Size",
+			dataIndex: "size",
+			key: "size",
+		},
+		{
+			title: "Type",
+			dataIndex: "type",
+			key: "type",
+		},
+		{
+			title: "Created At",
+			dataIndex: "createdAt",
+			key: "createdAt",
+		},
+		{
+			title: "Original File Modified At",
+			dataIndex: "fileModifiedAt",
+			key: "fileModifiedAt",
+		},
+		{
+			title: "Updated At",
+			dataIndex: "updatedAt",
+			key: "updatedAt",
+		},
+		{
+			title: "Bookmark",
+			key: "bookmark",
+			render: ({ id, bookmark, loading }: { id: string; bookmark: boolean; loading: boolean }) => (
+				<div>
+					<Button loading={loading} onClick={() => bookmarkPanorama(id, bookmark)}>
+						{bookmark ? <StarIcon /> : <StarOutlineIcon />}
+					</Button>
+				</div>
+			),
+		},
+	];
 
 	useEffect(() => {
 		const getPanoramas = async () => {
@@ -81,6 +100,21 @@ const Panoramas: React.FC = () => {
 
 		getPanoramas();
 	}, []);
+
+	const updatePanoramas = (id: string, updates: Partial<Panoramas>) =>
+		setPanoramas((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
+
+	const bookmarkPanorama = async (id: string, bookmark: boolean) => {
+		updatePanoramas(id, { loading: true });
+		const newBookmark = !bookmark;
+		try {
+			await axios.patch(`${API_BASE_URL}/panoramas/${id}/bookmark`, { bookmark: newBookmark });
+			updatePanoramas(id, { bookmark: newBookmark, loading: false });
+		} catch (error) {
+			updatePanoramas(id, { loading: false });
+			console.error("Failed to toggle bookmark: ", error);
+		}
+	};
 
 	return (
 		<>

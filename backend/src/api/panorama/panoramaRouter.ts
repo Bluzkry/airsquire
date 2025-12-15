@@ -4,8 +4,10 @@ import { z } from "zod";
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
 import { panoramaController } from "./panoramaController";
 import {
+	PANORAMA_BOOKMARK_SUCCESS_MESSAGE,
 	PANORAMA_GET_MANY_SUCCESS_MESSAGE,
 	PANORAMA_UPLOAD_SUCCESS_MESSAGE,
+	PanoramaBookmarkResponse,
 	PanoramaOpenApiSchema,
 	PanoramaUploadBody,
 	PanoramaUploadResponse,
@@ -38,6 +40,13 @@ panoramaRegistry.registerPath({
 	},
 	responses: createApiResponse(PanoramaUploadResponse, PANORAMA_UPLOAD_SUCCESS_MESSAGE),
 });
+panoramaRegistry.registerPath({
+	method: "patch",
+	path: "/panoramas/:id/bookmark",
+	tags: ["Panoramas"],
+	responses: createApiResponse(PanoramaBookmarkResponse, PANORAMA_BOOKMARK_SUCCESS_MESSAGE),
+});
 
 panoramaRouter.get("/", panoramaController.getPanoramas);
 panoramaRouter.post("/", panoramaController.postPanorama);
+panoramaRouter.patch("/:id/bookmark", panoramaController.patchPanoramaBookmark);

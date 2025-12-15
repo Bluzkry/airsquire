@@ -27,6 +27,19 @@ class PanoramaController {
 		const panoramaResponse = await panoramaService.insertPanorama(body, files as Express.Multer.File[]);
 		res.status(panoramaResponse.statusCode).send(panoramaResponse);
 	};
+
+	public patchPanoramaBookmark: RequestHandler = async (req, res) => {
+		const { bookmark } = req.body;
+		const { id } = req.params;
+		log.info({ message: "PATCH panorama bookmark", id, bookmark });
+
+		if (bookmark === null || bookmark === undefined) {
+			res.status(400).send("No ID or bookmark sent.");
+			return;
+		}
+		const bookmarkResponse = await panoramaService.updatePanoramaBookmark({ id, bookmark });
+		res.status(bookmarkResponse.statusCode).send(bookmarkResponse);
+	};
 }
 
 export const panoramaController = new PanoramaController();

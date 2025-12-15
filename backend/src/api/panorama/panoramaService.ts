@@ -4,7 +4,11 @@ import { pino } from "pino";
 import { ServiceResponse } from "@/common/models/serviceResponse";
 import { PanoramaRepository } from "@/db/panorama/PanoramaRepository";
 import type { PanoramaUploadBodyType } from "./panoramaModel";
-import { PANORAMA_GET_MANY_SUCCESS_MESSAGE, PANORAMA_UPLOAD_SUCCESS_MESSAGE } from "./panoramaModel";
+import {
+	PANORAMA_BOOKMARK_SUCCESS_MESSAGE,
+	PANORAMA_GET_MANY_SUCCESS_MESSAGE,
+	PANORAMA_UPLOAD_SUCCESS_MESSAGE,
+} from "./panoramaModel";
 
 const log = pino({ name: "Panorama Service" });
 
@@ -32,9 +36,14 @@ export class PanoramaService {
 		try {
 			const panoramas = await this.panoramaRepository.getMany();
 			return ServiceResponse.success(PANORAMA_GET_MANY_SUCCESS_MESSAGE, panoramas);
-		} catch (error) {
-			log.error({ message: "Error getting panoramas.", error });
-			return ServiceResponse.failure("Failed to get panoramas.", { error }, StatusCodes.INTERNAL_SERVER_ERROR);
+		} catch (err) {
+			const errorMessage = err instanceof Error ? { message: err.message, stack: err.stack } : err;
+			log.error({ message: "Error getting panoramas.", error: errorMessage });
+			return ServiceResponse.failure(
+				"Failed to get panoramas.",
+				{ error: errorMessage },
+				StatusCodes.INTERNAL_SERVER_ERROR,
+			);
 		}
 	}
 
@@ -55,12 +64,18 @@ export class PanoramaService {
 				fileModifiedAt: new Date(lastModifiedDate),
 				updatedAt: new Date(),
 				size,
+				bookmark: false,
 			});
 
 			return ServiceResponse.success(PANORAMA_UPLOAD_SUCCESS_MESSAGE, { id: inserted._id });
-		} catch (error) {
-			log.error({ message: "Error uploading panorama.", error });
-			return ServiceResponse.failure("Failed to upload panorama.", { error }, StatusCodes.INTERNAL_SERVER_ERROR);
+		} catch (err) {
+			const errorMessage = err instanceof Error ? { message: err.message, stack: err.stack } : err;
+			log.error({ message: "Error uploading panorama.", error: errorMessage });
+			return ServiceResponse.failure(
+				"Failed to upload panorama.",
+				{ error: errorMessage },
+				StatusCodes.INTERNAL_SERVER_ERROR,
+			);
 		}
 	}
 
@@ -81,6 +96,25 @@ export class PanoramaService {
 		});
 
 		return s3Key;
+	}
+
+	public async updatePanoramaBookmark({ id, bookmark }: { id: string; bookmark: boolean }) {
+		try {
+			const updated = await this.panoramaRepository.updateOne(id, { bookmark });
+
+			return ServiceResponse.success(PANORAMA_BOOKMARK_SUCCESS_MESSAGE, {
+				_id: updated._id,
+				bookmark: updated.bookmark,
+			});
+		} catch (err) {
+			const errorMessage = err instanceof Error ? { message: err.message, stack: err.stack } : err;
+			log.error({ message: "Error updating panorama bookmark.", error: errorMessage });
+			return ServiceResponse.failure(
+				"Failed to update panorama bookmark.",
+				{ error: errorMessage },
+				StatusCodes.INTERNAL_SERVER_ERROR,
+			);
+		}
 	}
 }
 
