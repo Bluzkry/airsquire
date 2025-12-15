@@ -1,14 +1,21 @@
-import type { Request, RequestHandler, Response } from "express";
+import type { RequestHandler } from "express";
 import { pino } from "pino";
 import { panoramaService } from "./panoramaService";
 
 const log = pino({ name: "Panorama Controller" });
 
 class PanoramaController {
-	public postPanorama: RequestHandler = async (req: Request, res: Response) => {
+	public getPanoramas: RequestHandler = async (_, res) => {
+		log.info({ message: "GET panoramas" });
+
+		const panoramasResponse = await panoramaService.getAllPanoramas();
+		res.status(panoramasResponse.statusCode).send(panoramasResponse);
+	};
+
+	public postPanorama: RequestHandler = async (req, res) => {
 		const { body, files } = req;
 		log.info({
-			message: "POST /panorama - Upload received.",
+			message: "POST panoramas - Upload received.",
 			body: req.body,
 			fileName: Array.isArray(req.files) ? req.files[0]?.originalname : "File missing.",
 		});

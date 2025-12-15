@@ -4,7 +4,7 @@ import { pino } from "pino";
 import { ServiceResponse } from "@/common/models/serviceResponse";
 import { PanoramaRepository } from "@/db/panorama/PanoramaRepository";
 import type { PanoramaUploadBodyType } from "./panoramaModel";
-import { PANORAMA_UPLOAD_SUCCESS_MESSAGE } from "./panoramaModel";
+import { PANORAMA_GET_MANY_SUCCESS_MESSAGE, PANORAMA_UPLOAD_SUCCESS_MESSAGE } from "./panoramaModel";
 
 const log = pino({ name: "Panorama Service" });
 
@@ -28,7 +28,17 @@ export class PanoramaService {
 		this.panoramaRepository = repository;
 	}
 
-	async insertPanorama(
+	public async getAllPanoramas() {
+		try {
+			const panoramas = await this.panoramaRepository.getMany();
+			return ServiceResponse.success(PANORAMA_GET_MANY_SUCCESS_MESSAGE, panoramas);
+		} catch (error) {
+			log.error({ message: "Error getting panoramas.", error });
+			return ServiceResponse.failure("Failed to get panoramas.", { error }, StatusCodes.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	public async insertPanorama(
 		body: PanoramaUploadBodyType,
 		files: Array<Express.Multer.File>,
 	): Promise<ServiceResponse<null | unknown>> {
@@ -54,7 +64,7 @@ export class PanoramaService {
 		}
 	}
 
-	async uploadToAws(panorama: Express.Multer.File): Promise<string> {
+	private async uploadToAws(panorama: Express.Multer.File): Promise<string> {
 		const s3Key = `${panorama.originalname}-${Date.now()}`;
 		log.info({ message: "Uploading panorama into AWS.", Key: s3Key });
 		const awsParams = {

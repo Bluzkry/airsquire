@@ -36,7 +36,7 @@ app.use(requestLogger);
 // Routes
 app.use("/health-check", healthCheckRouter);
 app.use("/users", userRouter);
-app.use("/panorama", panoramaRouter);
+app.use("/panoramas", panoramaRouter);
 
 // Swagger UI
 app.use(openAPIRouter);

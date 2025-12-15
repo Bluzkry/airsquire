@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import pino from "pino";
+import { GET_PANORAMAS_LIMIT } from "@/api/panorama/panoramaModel";
 
 const log = pino({ name: "Panorama Repository" });
 
@@ -31,9 +32,18 @@ export class PanoramaRepository {
 	async insertOne(panorama: PanoramaDocument) {
 		log.info({ message: "Inserting panorama metadata into MongoDB.", metadata: panorama });
 
-		const response = await PanoramaModel.create(panorama);
+		const document = await PanoramaModel.create(panorama);
 
-		log.info({ message: "Panorama metadata inserted successfully into MongoDB.", id: response._id });
-		return response;
+		log.info({ message: "Panorama metadata inserted successfully into MongoDB.", id: document._id });
+		return document;
+	}
+
+	async getMany() {
+		log.info({ message: "Getting panoramas metadata from MongoDB." });
+
+		const documents = await PanoramaModel.find().sort({ createdAt: -1 }).limit(GET_PANORAMAS_LIMIT);
+
+		log.info({ message: "Panoramas successfully gotten from MongoDB.", count: documents.length });
+		return documents;
 	}
 }

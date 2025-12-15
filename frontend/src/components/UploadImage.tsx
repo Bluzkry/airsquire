@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { InboxOutlined } from "@ant-design/icons";
-import { message, Upload } from "antd";
+import { message, Typography, Upload } from "antd";
 import type { RcFile, UploadChangeParam, UploadFile } from "antd/es/upload";
 import { API_BASE_URL } from "../utils/constants";
 
@@ -30,10 +30,10 @@ const UploadImage = () => {
 	};
 
 	return (
-		<div style={{ padding: "20px" }}>
-			<h2>Upload Panorama Image</h2>
+		<div>
+			<Typography.Title level={3}>Upload Panorama Image</Typography.Title>
 			<Dragger
-				action={`${API_BASE_URL}/panorama`}
+				action={`${API_BASE_URL}/panoramas`}
 				name="file"
 				maxCount={1}
 				accept="image/*"
