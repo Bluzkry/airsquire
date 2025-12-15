@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import StarIcon from "@mui/icons-material/Star";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import { Button, Table, Typography } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
 import prettyBytes from "pretty-bytes";
 import { API_BASE_URL } from "../utils/constants";
@@ -20,7 +21,7 @@ type PanoramasApiResponse = {
 	loading?: boolean;
 };
 
-type Panoramas = Omit<PanoramasApiResponse, "_id"> & {
+type Panorama = Omit<PanoramasApiResponse, "_id"> & {
 	id: string;
 	loading?: boolean;
 };
@@ -34,7 +35,7 @@ const parseDate = (date: string) =>
 		minute: "2-digit",
 	});
 
-const parsePanoramas = (panoramas: PanoramasApiResponse[]): Panoramas[] =>
+const parsePanoramas = (panoramas: PanoramasApiResponse[]): Panorama[] =>
 	panoramas.map(({ _id, name, size, createdAt, fileModifiedAt, updatedAt, ...rest }) => ({
 		...rest,
 		id: _id,
@@ -47,8 +48,8 @@ const parsePanoramas = (panoramas: PanoramasApiResponse[]): Panoramas[] =>
 	}));
 
 const Panoramas: React.FC = () => {
-	const [panoramas, setPanoramas] = useState<Panoramas[]>([]);
-	const panoramaColumns = [
+	const [panoramas, setPanoramas] = useState<Panorama[]>([]);
+	const panoramaColumns: ColumnsType<Panorama> = [
 		{
 			title: "Name",
 			dataIndex: "name",
@@ -82,6 +83,17 @@ const Panoramas: React.FC = () => {
 		{
 			title: "Bookmark",
 			key: "bookmark",
+			filters: [
+				{
+					text: "Bookmarked",
+					value: true,
+				},
+				{
+					text: "Not Bookmarked",
+					value: false,
+				},
+			],
+			onFilter: (value: boolean | React.Key, record: Panorama) => record.bookmark === (value as boolean),
 			render: ({ id, bookmark, loading }: { id: string; bookmark: boolean; loading: boolean }) => (
 				<div>
 					<Button loading={loading} onClick={() => bookmarkPanorama(id, bookmark)}>
@@ -101,7 +113,7 @@ const Panoramas: React.FC = () => {
 		getPanoramas();
 	}, []);
 
-	const updatePanoramas = (id: string, updates: Partial<Panoramas>) =>
+	const updatePanoramas = (id: string, updates: Partial<Panorama>) =>
 		setPanoramas((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
 
 	const bookmarkPanorama = async (id: string, bookmark: boolean) => {
