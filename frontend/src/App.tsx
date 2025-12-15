@@ -11,10 +11,11 @@ const App: React.FC = () => {
 		{ key: "/", label: <NavLink to="/">Home</NavLink> },
 		{ key: "/upload", label: <NavLink to="/upload">Upload Panorama</NavLink> },
 		{ key: "/panoramas", label: <NavLink to="/panoramas">Panoramas</NavLink> },
+		{ key: "/analytics", label: <NavLink to="/analytics">Analytics</NavLink> },
 	];
 
 	return (
-		<Layout className="h-screen">
+		<Layout style={{ minHeight: "100vh" }}>
 			<Header className="top-0">
 				<Menu mode="horizontal" theme="dark" selectedKeys={[location.pathname]} items={items} />
 				<div className="flex justify-center p-8">
@@ -23,7 +24,7 @@ const App: React.FC = () => {
 					</Typography.Title>
 				</div>
 			</Header>
-			<Content className="m-8 p-8 mt-16">
+			<Content className="m-16 p-8 mt-24 rounded-sm bg-slate-200">
 				<Outlet />
 			</Content>
 		</Layout>

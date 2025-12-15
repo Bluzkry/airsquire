@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
@@ -7,50 +7,17 @@ import { Button, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
 import FileSaver from "file-saver";
-import prettyBytes from "pretty-bytes";
+import { usePanoramas } from "../hooks/usePanoramas";
+import type { Panorama } from "../types/panorama";
 import { API_BASE_URL } from "../utils/constants";
 
-type PanoramasApiResponse = {
-	_id: string;
-	uid: string;
-	name: string;
-	size: string;
-	type: string;
-	createdAt: string;
-	fileModifiedAt: string;
-	updatedAt: string;
-	bookmark: boolean;
-	loading?: boolean;
-};
-
-type Panorama = Omit<PanoramasApiResponse, "_id"> & {
-	id: string;
-	loading?: boolean;
-};
-
-const parseDate = (date: string) =>
-	new Date(date).toLocaleString([], {
-		year: "numeric",
-		month: "numeric",
-		day: "numeric",
-		hour: "2-digit",
-		minute: "2-digit",
-	});
-
-const parsePanoramas = (panoramas: PanoramasApiResponse[]): Panorama[] =>
-	panoramas.map(({ _id, name, size, createdAt, fileModifiedAt, updatedAt, ...rest }) => ({
-		...rest,
-		id: _id,
-		name: name.replace(/\.[^/.]+$/, ""),
-		size: prettyBytes(Number(size)),
-		createdAt: parseDate(createdAt),
-		fileModifiedAt: parseDate(fileModifiedAt),
-		updatedAt: parseDate(updatedAt),
-		loading: false,
-	}));
-
 const Panoramas: React.FC = () => {
-	const [panoramas, setPanoramas] = useState<Panorama[]>([]);
+	const { fetchPanoramas, panoramas, setPanoramas } = usePanoramas();
+
+	useEffect(() => {
+		fetchPanoramas();
+	}, [fetchPanoramas]);
+
 	const panoramaColumns: ColumnsType<Panorama> = [
 		{
 			title: "Name",
@@ -117,17 +84,8 @@ const Panoramas: React.FC = () => {
 		},
 	];
 
-	useEffect(() => {
-		const getPanoramas = async () => {
-			const { data } = await axios.get(`${API_BASE_URL}/panoramas`);
-			setPanoramas(parsePanoramas(data.responseObject));
-		};
-
-		getPanoramas();
-	}, []);
-
 	const updatePanoramas = (id: string, updates: Partial<Panorama>) =>
-		setPanoramas((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
+		setPanoramas((prev: Panorama[]) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
 
 	const downloadPanorama = async (id: string) => {
 		updatePanoramas(id, { loading: true });
