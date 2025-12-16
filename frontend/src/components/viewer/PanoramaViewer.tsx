@@ -2,14 +2,15 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Layout, Spin, Typography } from "antd";
+import { Layout } from "antd";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { API_BASE_URL } from "../../utils/constants";
+import ErrorMessage from "../common/ErrorMessage";
+import Loading from "../common/Loading";
 import PanoramaMesh from "./PanoramaMesh";
 
 const { Content } = Layout;
-const { Title, Text } = Typography;
 
 const PanoramaViewer: React.FC = () => {
 	const { id } = useParams();
@@ -42,14 +43,9 @@ const PanoramaViewer: React.FC = () => {
 	if (error || loading)
 		return (
 			<Layout style={{ minHeight: "100vh" }} className="bg-slate-200">
-				<Content className="m-16 p-8 mt-24 text-center">
-					{loading && <Spin size="large" />}
-					{error && (
-						<>
-							<Title level={1}>Sorry, we had an error getting the image. </Title>
-							<Text>Please try again later.</Text>
-						</>
-					)}
+				<Content className="m-16 p-8 mt-24">
+					{loading && <Loading />}
+					{error && <ErrorMessage message="Sorry, we had an error getting the image." titleLevel={1} />}
 				</Content>
 			</Layout>
 		);

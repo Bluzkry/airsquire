@@ -7,10 +7,11 @@ import { panoramaService } from "./panoramaService";
 const log = pino({ name: "Panorama Controller" });
 
 class PanoramaController {
-	public getPanoramas: RequestHandler = async (_, res) => {
-		log.info({ message: "GET panoramas" });
+	public getPanoramas: RequestHandler = async (req, res) => {
+		const term = typeof req.query.term === "string" ? req.query.term : undefined;
+		log.info({ message: "GET panoramas", term });
 
-		const panoramasResponse = await panoramaService.getAllPanoramas();
+		const panoramasResponse = await panoramaService.getPanoramas(term);
 		res.status(panoramasResponse.statusCode).send(panoramasResponse);
 	};
 

@@ -6,6 +6,8 @@ const VennChart: React.FC = () => {
 	const { panoramas } = usePanoramas();
 	const data = panoramas.filter(({ bookmark }) => bookmark).map(({ name }) => ({ sets: [name], size: 1, label: name }));
 
+	const { Title } = Typography;
+
 	const vennConfig = {
 		data,
 		sizeField: "size",
@@ -29,9 +31,9 @@ const VennChart: React.FC = () => {
 
 	return (
 		<>
-			<Typography.Title level={4} className="flex justify-center">
+			<Title level={4} className="flex justify-center">
 				Bookmarked Panoramas
-			</Typography.Title>
+			</Title>
 			<Venn {...vennConfig} />
 		</>
 	);

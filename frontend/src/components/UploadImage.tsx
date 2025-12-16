@@ -13,6 +13,8 @@ type ImageInfo = {
 };
 
 const { Dragger } = Upload;
+const { Title } = Typography;
+
 const UploadImage = () => {
 	const [imageInfo, setImageInfo] = useState<ImageInfo | null>(null);
 
@@ -31,7 +33,7 @@ const UploadImage = () => {
 
 	return (
 		<div>
-			<Typography.Title level={3}>Upload Panorama Image</Typography.Title>
+			<Title level={3}>Upload Panorama Image</Title>
 			<Dragger
 				action={`${API_BASE_URL}/panoramas`}
 				name="file"

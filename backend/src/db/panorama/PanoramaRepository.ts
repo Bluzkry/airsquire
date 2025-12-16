@@ -33,7 +33,7 @@ export const PanoramaModel = model("Panorama", PanoramaSchema);
 export class PanoramaRepository {
 	async findOne(_id: string) {
 		try {
-			log.info({ message: "Getting panorama metadata from MongoDB.", _id });
+			log.info({ message: "Finding panorama metadata from MongoDB.", _id });
 
 			const document = await PanoramaModel.findById(_id).lean().exec();
 			if (!document) throw new Error("Panorama metadata not found.");
@@ -47,17 +47,21 @@ export class PanoramaRepository {
 		}
 	}
 
-	async getMany() {
+	async findMany(filter = {}) {
 		try {
-			log.info({ message: "Getting panoramas metadata from MongoDB." });
+			log.info({ message: "Finding panoramas metadata from MongoDB: ", filter });
 
-			const documents = await PanoramaModel.find().sort({ createdAt: -1 }).limit(GET_PANORAMAS_LIMIT).lean().exec();
+			const documents = await PanoramaModel.find(filter)
+				.sort({ createdAt: -1 })
+				.limit(GET_PANORAMAS_LIMIT)
+				.lean()
+				.exec();
 
-			log.info({ message: "Panoramas successfully gotten from MongoDB.", count: documents.length });
+			log.info({ message: "Found panoramas metadata.", count: documents.length });
 			return documents;
 		} catch (err) {
 			const errorMessage = err instanceof Error ? { message: err.message, stack: err.stack } : err;
-			log.error({ message: "Failed to get panoramas", error: errorMessage });
+			log.error({ message: "Failed to find panoramas", error: errorMessage });
 			throw err;
 		}
 	}
@@ -88,7 +92,7 @@ export class PanoramaRepository {
 			return result;
 		} catch (err) {
 			const errorMessage = err instanceof Error ? { message: err.message, stack: err.stack } : err;
-			log.error({ message: "Failed to update panorama", error: errorMessage, _id });
+			log.error({ message: "Failed to update panorama.", error: errorMessage, _id });
 			throw err;
 		}
 	}

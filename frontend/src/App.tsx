@@ -3,6 +3,7 @@ import { Layout, Menu, Typography } from "antd";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 const { Header, Content } = Layout;
+const { Title } = Typography;
 
 const App: React.FC = () => {
 	const location = useLocation();
@@ -19,9 +20,9 @@ const App: React.FC = () => {
 			<Header className="top-0">
 				<Menu mode="horizontal" theme="dark" selectedKeys={[location.pathname]} items={items} />
 				<div className="flex justify-center p-8">
-					<Typography.Title level={2} className="text-white">
+					<Title level={2} className="text-white">
 						Airsquire Panoramas
-					</Typography.Title>
+					</Title>
 				</div>
 			</Header>
 			<Content className="m-16 p-8 mt-24 rounded-sm bg-slate-200">

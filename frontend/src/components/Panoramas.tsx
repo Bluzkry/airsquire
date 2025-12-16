@@ -1,9 +1,9 @@
 import type React from "react";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import DownloadIcon from "@mui/icons-material/Download";
 import StarIcon from "@mui/icons-material/Star";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
-import { Button, Table, Typography } from "antd";
+import { Button, Input, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
 import FileSaver from "file-saver";
@@ -11,13 +11,25 @@ import { NavLink } from "react-router-dom";
 import { usePanoramas } from "../hooks/usePanoramas";
 import type { Panorama } from "../types/panorama";
 import { API_BASE_URL } from "../utils/constants";
+import { formatDate } from "../utils/dates";
+import ErrorMessage from "./common/ErrorMessage";
+import Loading from "./common/Loading";
+
+const { Title } = Typography;
 
 const Panoramas: React.FC = () => {
-	const { fetchPanoramas, panoramas, setPanoramas } = usePanoramas();
+	const { fetchPanoramas, panoramas, setPanoramas, isLoadingPanoramas, errorGettingPanoramas } = usePanoramas();
+
+	const handleFetchPanoramas = useCallback(
+		(term?: string) => {
+			if (term !== "") fetchPanoramas(term);
+		},
+		[fetchPanoramas],
+	);
 
 	useEffect(() => {
-		fetchPanoramas();
-	}, [fetchPanoramas]);
+		handleFetchPanoramas();
+	}, [handleFetchPanoramas]);
 
 	const panoramaColumns: ColumnsType<Panorama> = [
 		{
@@ -110,7 +122,8 @@ const Panoramas: React.FC = () => {
 		const newBookmark = !bookmark;
 		try {
 			await axios.patch(`${API_BASE_URL}/panoramas/${id}/bookmark`, { bookmark: newBookmark });
-			updatePanoramas(id, { bookmark: newBookmark, loading: false });
+			// We do an optimistic update.
+			updatePanoramas(id, { bookmark: newBookmark, updatedAt: formatDate(new Date()), loading: false });
 		} catch (error) {
 			console.error("Failed to toggle bookmark: ", error);
 			updatePanoramas(id, { loading: false });
@@ -119,8 +132,19 @@ const Panoramas: React.FC = () => {
 
 	return (
 		<>
-			<Typography.Title level={3}>Panoramas</Typography.Title>
-			<Table dataSource={panoramas} columns={panoramaColumns} />
+			<div>
+				<Title level={3}>Panoramas</Title>
+				<Input.Search
+					className="mb-8"
+					style={{ width: 400 }}
+					onSearch={handleFetchPanoramas}
+					placeholder="Search panoramas"
+					variant="filled"
+				/>
+				{!isLoadingPanoramas && !errorGettingPanoramas && <Table dataSource={panoramas} columns={panoramaColumns} />}
+			</div>
+			{isLoadingPanoramas && <Loading />}
+			{errorGettingPanoramas && <ErrorMessage message="Sorry, we had an error searching." />}
 		</>
 	);
 };

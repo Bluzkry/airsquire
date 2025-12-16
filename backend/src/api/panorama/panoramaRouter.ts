@@ -21,6 +21,11 @@ panoramaRegistry.registerPath({
 	method: "get",
 	path: "/panoramas",
 	tags: ["Panoramas"],
+	request: {
+		query: z.object({
+			term: z.string().optional().describe("Search term"),
+		}),
+	},
 	responses: createApiResponse(z.array(PanoramaOpenApiSchema), PANORAMA_GET_MANY_SUCCESS_MESSAGE),
 });
 panoramaRegistry.registerPath({

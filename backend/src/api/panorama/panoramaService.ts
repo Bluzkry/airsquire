@@ -1,5 +1,6 @@
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { StatusCodes } from "http-status-codes";
+import path from "path";
 import { pino } from "pino";
 import { ServiceResponse } from "@/common/models/serviceResponse";
 import { PanoramaRepository } from "@/db/panorama/PanoramaRepository";
@@ -32,9 +33,22 @@ export class PanoramaService {
 		this.panoramaRepository = repository;
 	}
 
-	public async getAllPanoramas() {
+	private createFilter = (search: string) => ({
+		$or: search
+			.split(",")
+			.map((n) => n.trim())
+			.filter(Boolean)
+			.map((term) => ({
+				name: { $regex: term, $options: "i" },
+			})),
+	});
+
+	public async getPanoramas(search: string | undefined) {
 		try {
-			const panoramas = await this.panoramaRepository.getMany();
+			let filter = {};
+			if (search) filter = this.createFilter(search);
+
+			const panoramas = await this.panoramaRepository.findMany(filter);
 			return ServiceResponse.success(PANORAMA_GET_MANY_SUCCESS_MESSAGE, panoramas);
 		} catch (err) {
 			const errorMessage = err instanceof Error ? { message: err.message, stack: err.stack } : err;
@@ -104,7 +118,7 @@ export class PanoramaService {
 			const inserted = await this.panoramaRepository.insertOne({
 				uid,
 				s3Key,
-				name,
+				name: path.parse(name).name,
 				type,
 				createdAt: new Date(),
 				fileModifiedAt: new Date(lastModifiedDate),
@@ -127,7 +141,7 @@ export class PanoramaService {
 
 	public async updatePanoramaBookmark({ id, bookmark }: { id: string; bookmark: boolean }) {
 		try {
-			const updated = await this.panoramaRepository.updateOne(id, { bookmark });
+			const updated = await this.panoramaRepository.updateOne(id, { bookmark, updatedAt: new Date() });
 
 			return ServiceResponse.success(PANORAMA_BOOKMARK_SUCCESS_MESSAGE, {
 				_id: updated._id,

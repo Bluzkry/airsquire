@@ -1,10 +1,12 @@
 import type React from "react";
 import { Typography } from "antd";
 
+const { Title } = Typography;
+
 const HomePage: React.FC = () => {
 	return (
 		<>
-			<Typography.Title level={3}>Welcome!</Typography.Title>
+			<Title level={3}>Welcome!</Title>
 		</>
 	);
 };
