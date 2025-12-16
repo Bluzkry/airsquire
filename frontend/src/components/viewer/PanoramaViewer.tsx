@@ -1,14 +1,12 @@
 import type React from "react";
 import { useEffect, useState } from "react";
-import { OrbitControls } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
 import { Layout } from "antd";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { API_BASE_URL } from "../../utils/constants";
 import ErrorMessage from "../common/ErrorMessage";
 import Loading from "../common/Loading";
-import PanoramaMesh from "./PanoramaMesh";
+import PanoramaCanvas from "./PanoramaCanvas";
 
 const { Content } = Layout;
 
@@ -50,22 +48,7 @@ const PanoramaViewer: React.FC = () => {
 			</Layout>
 		);
 
-	return (
-		<div className="h-screen w-screen">
-			{panoramaUrl && (
-				<Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-					<PanoramaMesh imageUrl={panoramaUrl} />
-					<OrbitControls
-						enableDamping={true}
-						enablePan={false}
-						rotateSpeed={-0.3}
-						minDistance={0.1}
-						maxDistance={0.1}
-					/>
-				</Canvas>
-			)}
-		</div>
-	);
+	return <div className="h-screen w-screen">{panoramaUrl && <PanoramaCanvas imageUrl={panoramaUrl} />}</div>;
 };
 
 export default PanoramaViewer;

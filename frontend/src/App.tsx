@@ -19,13 +19,13 @@ const App: React.FC = () => {
 		<Layout style={{ minHeight: "100vh" }}>
 			<Header className="top-0">
 				<Menu mode="horizontal" theme="dark" selectedKeys={[location.pathname]} items={items} />
-				<div className="flex justify-center p-8">
+				<div className="flex justify-center px-8 py-6">
 					<Title level={2} className="text-white">
 						Airsquire Panoramas
 					</Title>
 				</div>
 			</Header>
-			<Content className="m-16 p-8 mt-24 rounded-sm bg-slate-200">
+			<Content className="m-16 mt-20 p-8 pt-6 rounded-sm bg-slate-200">
 				<Outlet />
 			</Content>
 		</Layout>
