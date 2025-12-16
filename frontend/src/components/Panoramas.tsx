@@ -7,6 +7,7 @@ import { Button, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
 import FileSaver from "file-saver";
+import { NavLink } from "react-router-dom";
 import { usePanoramas } from "../hooks/usePanoramas";
 import type { Panorama } from "../types/panorama";
 import { API_BASE_URL } from "../utils/constants";
@@ -21,8 +22,11 @@ const Panoramas: React.FC = () => {
 	const panoramaColumns: ColumnsType<Panorama> = [
 		{
 			title: "Name",
-			dataIndex: "name",
-			key: "name",
+			render: ({ id, name }: { id: string; name: string }) => (
+				<NavLink to={`/panoramaViewer/${id}`} target="_blank">
+					{name}
+				</NavLink>
+			),
 		},
 		{
 			title: "Size",
@@ -64,22 +68,18 @@ const Panoramas: React.FC = () => {
 			],
 			onFilter: (value: boolean | React.Key, record: Panorama) => record.bookmark === (value as boolean),
 			render: ({ id, bookmark, loading }: { id: string; bookmark: boolean; loading: boolean }) => (
-				<div>
-					<Button loading={loading} onClick={() => bookmarkPanorama(id, bookmark)}>
-						{bookmark ? <StarIcon /> : <StarOutlineIcon />}
-					</Button>
-				</div>
+				<Button loading={loading} onClick={() => bookmarkPanorama(id, bookmark)}>
+					{bookmark ? <StarIcon /> : <StarOutlineIcon />}
+				</Button>
 			),
 		},
 		{
 			title: "Download",
 			key: "download",
 			render: ({ id, loading }: { id: string; loading: boolean }) => (
-				<div>
-					<Button loading={loading} onClick={() => downloadPanorama(id)}>
-						<DownloadIcon />
-					</Button>
-				</div>
+				<Button loading={loading} onClick={() => downloadPanorama(id)}>
+					<DownloadIcon />
+				</Button>
 			),
 		},
 	];

@@ -5,6 +5,7 @@ import Analytics from "../components/analytics/Analytics";
 import HomePage from "../components/HomePage";
 import Panoramas from "../components/Panoramas";
 import UploadImage from "../components/UploadImage";
+import PanoramaViewer from "../components/viewer/PanoramaViewer";
 
 const router = createBrowserRouter([
 	{
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
 			{ path: "/panoramas", element: <Panoramas /> },
 			{ path: "/analytics", element: <Analytics /> },
 		],
+	},
+	{
+		path: "/panoramaViewer/:id",
+		element: <PanoramaViewer />,
 	},
 ]);
 
